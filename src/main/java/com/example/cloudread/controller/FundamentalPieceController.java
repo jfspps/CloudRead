@@ -1,7 +1,7 @@
 package com.example.cloudread.controller;
 
-import com.example.JAXBmodel.FundamentalPieceList;
-import com.example.cloudread.service.FundamentalPieceService;
+import com.example.cloudread.config.WebClientConfig;
+import com.example.cloudread.service.XMLService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,19 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class FundamentalPieceController {
 
-    private final FundamentalPieceService fundamentalPieceService;
+    private final XMLService xmlService;
+    public static final String fundamentalServiceURLSuffix = "/fundamentals/";
 
-    public FundamentalPieceController(FundamentalPieceService fundamentalPieceService) {
-        this.fundamentalPieceService = fundamentalPieceService;
+    public FundamentalPieceController(XMLService xmlService) {
+        this.xmlService = xmlService;
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/listFundamentals")
     public String getIndex() {
-        log.info("Logged in");
+        String xmlFeed = xmlService.downloadXML(WebClientConfig.BASE_URL + fundamentalServiceURLSuffix);
 
-        FundamentalPieceList fundamentalPieceList = fundamentalPieceService.getAllPieces_Adv();
-
-        log.info("Number of pieces: " + fundamentalPieceList.getFundamentalPieces().size());
+        log.info("Test URL: " + xmlFeed);
 
         return null;
     }

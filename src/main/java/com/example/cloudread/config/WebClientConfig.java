@@ -17,17 +17,15 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
 
 @Configuration
 public class WebClientConfig implements WebMvcConfigurer {
-    private static final String BASE_URL = "http://localhost:5000/api";
+    public static final String BASE_URL = "http://localhost:5000/api";
     public static final int TIMEOUT = 1000;
 
-    @Bean
     public WebClient webClientSimple(){
         return WebClient.builder()
                 .baseUrl(BASE_URL)
                 .build();
     }
 
-    @Bean
     public WebClient webClientWithTimeout() {
         final var tcpClient = TcpClient
                 .create()
