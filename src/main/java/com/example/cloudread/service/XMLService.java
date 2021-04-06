@@ -1,12 +1,14 @@
 package com.example.cloudread.service;
 
+import com.example.JAXBmodel.FundamentalPieceList;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,44 +17,35 @@ import java.net.URL;
 @Slf4j
 public class XMLService {
 
-    public String downloadXML(String urlPath){
-        StringBuilder xmlResult = new StringBuilder();
-
+    public boolean downloadXML(String urlPath, String filename){
         try {
             URL url = new URL(urlPath);                                                 // URL exception possible, handled first
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();    // IOException possible
+            connection.setRequestProperty("Accept", "application/xml");
             int response = connection.getResponseCode();                                // IOException possible
             log.debug("downloadXML response code: " + response);
 
-            // these calls could be chained together
             InputStream inputStream = connection.getInputStream();                      // IOException possible
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            File targetFile = new File(filename);
+            OutputStream outStream = new FileOutputStream(targetFile);
 
-            int charsRead;
-            char[] inputBuffer = new char[500];     // for capacities, see https://stackoverflow.com/questions/4638974/what-is-the-buffer-size-in-bufferedreader
-            while (true){
-                // read bufferedReader values into inputBuffer
-                charsRead = bufferedReader.read(inputBuffer);
-                if (charsRead < 0){
-                    // read() returns -1 at end of stream
-                    break;
-                }
-                if (charsRead > 0){
-                    xmlResult.append(String.copyValueOf(inputBuffer, 0, charsRead));
-                }
+            byte[] buffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
             }
-            bufferedReader.close();
-            return xmlResult.toString();
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outStream);
+            log.info("XML file saved");
+
+            return true;
 
         } catch (MalformedURLException e){
-            log.debug("downloadXML invalid URL: " + e.getMessage());
+            log.debug("Download XML invalid URL: " + e.getMessage());
         } catch (IOException e){
-            log.debug("downloadXML IO exception: " + e.getMessage());
-        } catch (SecurityException e){
-            log.debug("downloadXML security exception: " + e.getMessage());
+            log.debug("Download XML IO exception: " + e.getMessage());
         }
 
-        return null;
+        return false;
     }
 }
