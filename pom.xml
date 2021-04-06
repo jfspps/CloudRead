@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:jxb="http://java.sun.com/xml/ns/persistence/orm"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -58,6 +59,13 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>jaxb2-maven-plugin</artifactId>
             <version>2.5.0</version>
+        </dependency>
+
+        <!-- For XML binding XBJ -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
         </dependency>
 
         <!--        Webjars-->
@@ -127,6 +135,12 @@
                     <sources>
                         <source>src/main/resources/xsd</source>
                     </sources>
+
+                    <!-- XJB: XML binding -->
+                    <xjbSources>
+                        <xjbSource>src/main/resources/xjb</xjbSource>
+                    </xjbSources>
+
                 </configuration>
             </plugin>
         </plugins>

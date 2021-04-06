@@ -1,6 +1,6 @@
 package com.example.cloudread.service;
 
-import com.example.JAXBmodel.FundamentalPieceList;
+import com.example.JAXBmodel.FundamentalPieceDTOList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
@@ -47,5 +47,21 @@ public class XMLService {
         }
 
         return false;
+    }
+
+    public FundamentalPieceDTOList parseFundamentalXML(String filename) {
+        FundamentalPieceDTOList fundamentalPieceDTOList = new FundamentalPieceDTOList();
+
+        try (FileInputStream adrFile = new FileInputStream(filename)) {
+            JAXBContext ctx = JAXBContext.newInstance(FundamentalPieceDTOList.class);
+            Unmarshaller um = ctx.createUnmarshaller();
+            fundamentalPieceDTOList = (FundamentalPieceDTOList) um.unmarshal(adrFile);
+        } catch (JAXBException jaxbException){
+            log.debug("JAXB problem: " + jaxbException.getMessage());
+        } catch (IOException ioException){
+            log.debug("IO exception: " + ioException.getMessage());
+        }
+
+        return fundamentalPieceDTOList;
     }
 }
