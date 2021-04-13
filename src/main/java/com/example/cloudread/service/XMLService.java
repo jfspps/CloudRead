@@ -1,13 +1,9 @@
 package com.example.cloudread.service;
 
-import com.example.JAXBmodel.FundamentalPieceDTOList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -49,19 +45,35 @@ public class XMLService {
         return false;
     }
 
-    public FundamentalPieceDTOList parseFundamentalXML(String filename) {
-        FundamentalPieceDTOList fundamentalPieceDTOList = new FundamentalPieceDTOList();
+    public boolean downloadJSON(String urlPath, String filename){
+        try {
+            URL url = new URL(urlPath);                                                 // URL exception possible, handled first
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();    // IOException possible
+            connection.setRequestProperty("Accept", "application/json");
+            int response = connection.getResponseCode();                                // IOException possible
+            log.debug("downloadJSON response code: " + response);
 
-        try (FileInputStream adrFile = new FileInputStream(filename)) {
-            JAXBContext ctx = JAXBContext.newInstance(FundamentalPieceDTOList.class);
-            Unmarshaller um = ctx.createUnmarshaller();
-            fundamentalPieceDTOList = (FundamentalPieceDTOList) um.unmarshal(adrFile);
-        } catch (JAXBException jaxbException){
-            log.debug("JAXB problem: " + jaxbException.getMessage());
-        } catch (IOException ioException){
-            log.debug("IO exception: " + ioException.getMessage());
+            InputStream inputStream = connection.getInputStream();                      // IOException possible
+            File targetFile = new File(filename);
+            OutputStream outStream = new FileOutputStream(targetFile);
+
+            byte[] buffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outStream);
+            log.info("JSON file saved");
+
+            return true;
+
+        } catch (MalformedURLException e){
+            log.debug("Download JSON invalid URL: " + e.getMessage());
+        } catch (IOException e){
+            log.debug("Download JSON IO exception: " + e.getMessage());
         }
 
-        return fundamentalPieceDTOList;
+        return false;
     }
 }

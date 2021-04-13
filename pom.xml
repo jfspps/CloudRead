@@ -61,13 +61,6 @@
             <version>2.5.0</version>
         </dependency>
 
-        <!-- For XML binding XBJ -->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-
         <!--        Webjars-->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -130,17 +123,11 @@
                 </executions>
                 <configuration>
                     <!-- The package of your generated sources -->
-                    <packageName>com.example.JAXBmodel</packageName>
+                    <packageName>com.example.cloudread.JAXBmodel</packageName>
                     <!-- Define the directory where we should find the DTD files -->
                     <sources>
                         <source>src/main/resources/xsd</source>
                     </sources>
-
-                    <!-- XJB: XML binding -->
-                    <xjbSources>
-                        <xjbSource>src/main/resources/xjb</xjbSource>
-                    </xjbSources>
-
                 </configuration>
             </plugin>
         </plugins>
