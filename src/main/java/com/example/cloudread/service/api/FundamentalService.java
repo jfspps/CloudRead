@@ -1,4 +1,4 @@
-package com.example.cloudread.service;
+package com.example.cloudread.service.api;
 
 import com.example.cloudread.JAXBmodel.ConceptDTO;
 import com.example.cloudread.JAXBmodel.ConceptDTOList;
@@ -40,8 +40,15 @@ public class FundamentalService {
         this.xmlService = xmlService;
     }
 
-    // https://www.baeldung.com/java-stax
     public FundamentalPieceDTOList parseFundamentalURL(String urlPath, String filename) {
+        // save request to XML first then parse XML
+        if (xmlService.downloadXML(urlPath, filename)) {
+            return parseFundamentalXMLFile(filename);
+        }
+        return null;
+    }
+
+    public FundamentalPieceDTOList parseFundamentalXMLFile(String filename) {
 
         FundamentalPieceDTOList fundamentalPieceDTOList = new FundamentalPieceDTOList();
         FundamentalPieceDTO fundamentalPieceDTO = null;
@@ -49,53 +56,51 @@ public class FundamentalService {
         try {
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
-            // save request to XML first then parse XML
-            if (xmlService.downloadXML(urlPath, filename)) {
-                File retrieveFile = new File(filename);
-                XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream(retrieveFile));
+            File retrieveFile = new File(filename);
+            XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream(retrieveFile));
 
-                while (reader.hasNext()) {
-                    nextEvent = reader.nextEvent();
-                    if (nextEvent.isStartElement()) {
-                        StartElement startElement = nextEvent.asStartElement();
-                        switch (startElement.getName().getLocalPart()) {
-                            case XMLFundamentalPiece:
-                                fundamentalPieceDTO = new FundamentalPieceDTO();
-                                break;
-                            case XML_ID:
-                                nextEvent = reader.nextEvent();
-                                fundamentalPieceDTO.setId(Long.parseLong(nextEvent.asCharacters().getData()));
-                                break;
-                            case XMLFundamentalTitle:
-                                nextEvent = reader.nextEvent();
-                                fundamentalPieceDTO.setTitle(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLFundamentalKeyword:
-                                nextEvent = reader.nextEvent();
-                                fundamentalPieceDTO.setKeyword(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLFundamentalPrerequisites:
-                                nextEvent = reader.nextEvent();
-                                fundamentalPieceDTO.setPrerequisites(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLFundamentalSummary:
-                                nextEvent = reader.nextEvent();
-                                fundamentalPieceDTO.setSummary(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLConceptDTOList:
-                                fundamentalPieceDTO.setConceptDTOList(buildConceptList(reader));
-                                break;
-                        }
+            while (reader.hasNext()) {
+                nextEvent = reader.nextEvent();
+                if (nextEvent.isStartElement()) {
+                    StartElement startElement = nextEvent.asStartElement();
+                    switch (startElement.getName().getLocalPart()) {
+                        case XMLFundamentalPiece:
+                            fundamentalPieceDTO = new FundamentalPieceDTO();
+                            break;
+                        case XML_ID:
+                            nextEvent = reader.nextEvent();
+                            fundamentalPieceDTO.setId(Long.parseLong(nextEvent.asCharacters().getData()));
+                            break;
+                        case XMLFundamentalTitle:
+                            nextEvent = reader.nextEvent();
+                            fundamentalPieceDTO.setTitle(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLFundamentalKeyword:
+                            nextEvent = reader.nextEvent();
+                            fundamentalPieceDTO.setKeyword(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLFundamentalPrerequisites:
+                            nextEvent = reader.nextEvent();
+                            fundamentalPieceDTO.setPrerequisites(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLFundamentalSummary:
+                            nextEvent = reader.nextEvent();
+                            fundamentalPieceDTO.setSummary(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLConceptDTOList:
+                            fundamentalPieceDTO.setConceptDTOList(buildConceptList(reader));
+                            break;
                     }
-                    if (nextEvent.isEndElement()) {
-                        EndElement endElement = nextEvent.asEndElement();
-                        if (endElement.getName().getLocalPart().equals(XMLFundamentalPiece)) {
-                            // reached the end of the fundamental piece
-                            fundamentalPieceDTOList.getFundamentalPiece().add(fundamentalPieceDTO);
-                        }
+                }
+                if (nextEvent.isEndElement()) {
+                    EndElement endElement = nextEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals(XMLFundamentalPiece)) {
+                        // reached the end of the fundamental piece
+                        fundamentalPieceDTOList.getFundamentalPiece().add(fundamentalPieceDTO);
                     }
                 }
             }
+
         } catch (IOException e) {
             log.debug("Download XML IO exception: " + e.getMessage());
         } catch (XMLStreamException xmlStreamException) {
@@ -144,7 +149,7 @@ public class FundamentalService {
                         // reached the end of the conceptDTO
                         conceptDTOList.getConceptDTO().add(conceptDTO);
                     }
-                    if (endElement.getName().getLocalPart().equals(XMLConceptDTOList)){
+                    if (endElement.getName().getLocalPart().equals(XMLConceptDTOList)) {
                         // reached end of ConceptList
                         return conceptDTOList;
                     }
