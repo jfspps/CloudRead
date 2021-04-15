@@ -1,8 +1,8 @@
-package com.example.cloudread.controller;
+package com.example.cloudread.controller.api;
 
 import com.example.cloudread.config.WebClientConfig;
-import com.example.cloudread.service.FundamentalService;
-import com.example.cloudread.service.XMLService;
+import com.example.cloudread.service.api.FundamentalService;
+import com.example.cloudread.service.api.XMLService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

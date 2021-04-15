@@ -1,4 +1,4 @@
-package com.example.cloudread.service;
+package com.example.cloudread.service.api;
 
 import com.example.cloudread.JAXBmodel.*;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +46,14 @@ public class ResearchService {
     }
 
     public ResearchPieceDTOList parseResearchURL(String urlPath, String filename) {
+        // save request to XML first then parse XML
+        if (xmlService.downloadXML(urlPath, filename)) {
+            return parseResearchXML(filename);
+        }
+        return null;
+    }
+
+    public ResearchPieceDTOList parseResearchXML(String filename) {
 
         ResearchPieceDTOList researchPieceDTOList = new ResearchPieceDTOList();
         ResearchPieceDTO researchPieceDTO = null;
@@ -54,60 +62,57 @@ public class ResearchService {
         try {
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
-            // save request to XML first then parse XML
-            if (xmlService.downloadXML(urlPath, filename)) {
-                File retrieveFile = new File(filename);
-                XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream(retrieveFile));
+            File retrieveFile = new File(filename);
+            XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream(retrieveFile));
 
-                while (reader.hasNext()) {
-                    nextEvent = reader.nextEvent();
-                    if (nextEvent.isStartElement()) {
-                        StartElement startElement = nextEvent.asStartElement();
-                        switch (startElement.getName().getLocalPart()) {
-                            case XMLResearchPiece:
-                                researchPieceDTO = new ResearchPieceDTO();
-                                break;
-                            case XML_ID:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setId(Long.parseLong(nextEvent.asCharacters().getData()));
-                                break;
-                            case XMLResearchTitle:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setTitle(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLResearchKeyword:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setKeyword(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLResearchPurpose:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setResearchPurpose(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLResearchProgress:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setCurrentProgress(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLReseachFutureWork:
-                                nextEvent = reader.nextEvent();
-                                researchPieceDTO.setFutureWork(nextEvent.asCharacters().getData());
-                                break;
-                            case XMLKeyResultDTOList:
-                                researchPieceDTO.setKeyResultDTOList(buildKeyResultList(reader));
-                                break;
-                            case XMLStandfirst:
-                                researchPieceDTO.setStandfirstDTO(buildStandfirst(reader));
-                                break;
-                            case XMLCitationDTOList:
-                                researchPieceDTO.setCitationDTOList(buildCitationList(reader));
-                                break;
-                        }
+            while (reader.hasNext()) {
+                nextEvent = reader.nextEvent();
+                if (nextEvent.isStartElement()) {
+                    StartElement startElement = nextEvent.asStartElement();
+                    switch (startElement.getName().getLocalPart()) {
+                        case XMLResearchPiece:
+                            researchPieceDTO = new ResearchPieceDTO();
+                            break;
+                        case XML_ID:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setId(Long.parseLong(nextEvent.asCharacters().getData()));
+                            break;
+                        case XMLResearchTitle:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setTitle(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLResearchKeyword:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setKeyword(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLResearchPurpose:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setResearchPurpose(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLResearchProgress:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setCurrentProgress(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLReseachFutureWork:
+                            nextEvent = reader.nextEvent();
+                            researchPieceDTO.setFutureWork(nextEvent.asCharacters().getData());
+                            break;
+                        case XMLKeyResultDTOList:
+                            researchPieceDTO.setKeyResultDTOList(buildKeyResultList(reader));
+                            break;
+                        case XMLStandfirst:
+                            researchPieceDTO.setStandfirstDTO(buildStandfirst(reader));
+                            break;
+                        case XMLCitationDTOList:
+                            researchPieceDTO.setCitationDTOList(buildCitationList(reader));
+                            break;
                     }
-                    if (nextEvent.isEndElement()) {
-                        EndElement endElement = nextEvent.asEndElement();
-                        if (endElement.getName().getLocalPart().equals(XMLResearchPiece)) {
-                            // reached the end of the fundamental piece
-                            researchPieceDTOList.getResearchPiece().add(researchPieceDTO);
-                        }
+                }
+                if (nextEvent.isEndElement()) {
+                    EndElement endElement = nextEvent.asEndElement();
+                    if (endElement.getName().getLocalPart().equals(XMLResearchPiece)) {
+                        // reached the end of the fundamental piece
+                        researchPieceDTOList.getResearchPiece().add(researchPieceDTO);
                     }
                 }
             }
@@ -150,7 +155,7 @@ public class ResearchService {
                     if (endElement.getName().getLocalPart().equals(XMLCitationDTO)) {
                         citationDTOList.getCitationDTO().add(citationDTO);
                     }
-                    if (endElement.getName().getLocalPart().equals(XMLCitationDTOList)){
+                    if (endElement.getName().getLocalPart().equals(XMLCitationDTOList)) {
                         return citationDTOList;
                     }
                 }
@@ -188,7 +193,7 @@ public class ResearchService {
                 }
                 if (nextEvent.isEndElement()) {
                     EndElement endElement = nextEvent.asEndElement();
-                    if (endElement.getName().getLocalPart().equals(XMLStandfirst)){
+                    if (endElement.getName().getLocalPart().equals(XMLStandfirst)) {
                         return standfirstDTO;
                     }
                 }
@@ -233,7 +238,7 @@ public class ResearchService {
                     if (endElement.getName().getLocalPart().equals(XMLKeyResultDTO)) {
                         keyResultDTOList.getKeyResultDTO().add(keyResultDTO);
                     }
-                    if (endElement.getName().getLocalPart().equals(XMLKeyResultDTOList)){
+                    if (endElement.getName().getLocalPart().equals(XMLKeyResultDTOList)) {
                         return keyResultDTOList;
                     }
                 }
