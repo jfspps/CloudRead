@@ -12,7 +12,9 @@ public class FundamentalPieceController {
 
     private final XMLService xmlService;
 
+    // see CloudWrite for routing
     public static final String fundamentalServiceURLSuffix = "/fundamentals/";
+
     public static final String FUNDAMENTAL_XMLFILE = "./src/main/resources/xmlFeeds/fundamental.xml";
     public static final String FUNDAMENTAL_JSONFILE = "./src/main/resources/xmlFeeds/fundamental.json";
 
@@ -28,5 +30,10 @@ public class FundamentalPieceController {
     @GetMapping(value = "/listFundamentals/json")
     public String getIndexJSON() {
         return "List of fundamental articles JSON refreshed: " + xmlService.downloadJSON(WebClientConfig.BASE_URL + fundamentalServiceURLSuffix, FUNDAMENTAL_JSONFILE);
+    }
+
+    @GetMapping(value = "/listFundamentals/buildPieceList")
+    public String getbuildFundamentalList() {
+        return "Building fundamental pieces list: " + xmlService.parseFundamentalURL(WebClientConfig.BASE_URL + fundamentalServiceURLSuffix, FUNDAMENTAL_XMLFILE).getFundamentalPiece().size();
     }
 }
