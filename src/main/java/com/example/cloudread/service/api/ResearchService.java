@@ -1,7 +1,12 @@
 package com.example.cloudread.service.api;
 
 import com.example.cloudread.JAXBmodel.*;
+import com.example.cloudread.config.WebClientConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.springframework.stereotype.Service;
 
 import javax.xml.stream.XMLEventReader;
@@ -248,5 +253,52 @@ public class ResearchService {
         }
 
         return null;
+    }
+
+    public String composeResearchDOCX(ResearchPieceDTO researchPieceDTO, String filename){
+        String filenamePath = WebClientConfig.DOCX_directory + filename;
+        WordprocessingMLPackage wordPackage = null;
+
+        try {
+            wordPackage = WordprocessingMLPackage.createPackage();
+            MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+            mainDocumentPart.addStyledParagraphOfText("Title", researchPieceDTO.getTitle());
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Standfirst");
+            mainDocumentPart.addParagraphOfText(researchPieceDTO.getStandfirstDTO().getRationale());
+            mainDocumentPart.addParagraphOfText(researchPieceDTO.getStandfirstDTO().getApproach());
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Research purpose");
+            mainDocumentPart.addParagraphOfText(researchPieceDTO.getResearchPurpose());
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Current status");
+            mainDocumentPart.addParagraphOfText(researchPieceDTO.getCurrentProgress());
+
+            // assume that ordering of results was handled by CloudWrite
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Key Results");
+            for (KeyResultDTO keyResultDTO : researchPieceDTO.getKeyResultDTOList().getKeyResultDTO()) {
+                mainDocumentPart.addParagraphOfText(keyResultDTO.getDescription());
+            }
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Future work");
+            mainDocumentPart.addParagraphOfText(researchPieceDTO.getFutureWork());
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Citations");
+            for (CitationDTO citationDTO : researchPieceDTO.getCitationDTOList().getCitationDTO()) {
+                mainDocumentPart.addParagraphOfText(citationDTO.getReference());
+            }
+
+            File exportFile = new File(filenamePath);
+            wordPackage.save(exportFile);
+        } catch (InvalidFormatException invalidFormatException){
+            log.debug("Error building wordPackage: " + invalidFormatException.getMessage());
+        } catch (Docx4JException e) {
+            log.debug("Error saving DOCX: " + e.getMessage());
+        }
+
+        if (wordPackage != null){
+            return filenamePath;
+        } else
+            return null;
     }
 }

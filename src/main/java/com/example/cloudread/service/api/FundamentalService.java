@@ -1,10 +1,12 @@
 package com.example.cloudread.service.api;
 
-import com.example.cloudread.JAXBmodel.ConceptDTO;
-import com.example.cloudread.JAXBmodel.ConceptDTOList;
-import com.example.cloudread.JAXBmodel.FundamentalPieceDTO;
-import com.example.cloudread.JAXBmodel.FundamentalPieceDTOList;
+import com.example.cloudread.JAXBmodel.*;
+import com.example.cloudread.config.WebClientConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.springframework.stereotype.Service;
 
 import javax.xml.stream.XMLEventReader;
@@ -160,5 +162,47 @@ public class FundamentalService {
         }
 
         return null;
+    }
+
+    /**
+     * Composes a DOCX file, using the article title as a basis for the filename
+     * @param fundamentalPieceDTO
+     * @param filename
+     * @return path and filename
+     */
+    public String composeFundamentalDOCX(FundamentalPieceDTO fundamentalPieceDTO, String filename){
+        String filenamePath = WebClientConfig.DOCX_directory + filename;
+        WordprocessingMLPackage wordPackage = null;
+
+        try {
+            wordPackage = WordprocessingMLPackage.createPackage();
+            MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+            mainDocumentPart.addStyledParagraphOfText("Title", fundamentalPieceDTO.getTitle());
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Prerequisites");
+            mainDocumentPart.addParagraphOfText(fundamentalPieceDTO.getPrerequisites());
+
+            // assume that ordering of concepts was handled by CloudWrite
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Concepts");
+            for (ConceptDTO conceptDTO : fundamentalPieceDTO.getConceptDTOList().getConceptDTO()) {
+                mainDocumentPart.addStyledParagraphOfText("Heading6", conceptDTO.getPurpose());
+                mainDocumentPart.addParagraphOfText(conceptDTO.getDescription());
+            }
+
+            mainDocumentPart.addStyledParagraphOfText("Heading2", "Summary");
+            mainDocumentPart.addParagraphOfText(fundamentalPieceDTO.getSummary());
+
+            File exportFile = new File(filenamePath);
+            wordPackage.save(exportFile);
+        } catch (InvalidFormatException invalidFormatException){
+            log.debug("Error building wordPackage: " + invalidFormatException.getMessage());
+        } catch (Docx4JException e) {
+            log.debug("Error saving DOCX: " + e.getMessage());
+        }
+
+        if (wordPackage != null){
+            return filenamePath;
+        } else
+            return null;
     }
 }

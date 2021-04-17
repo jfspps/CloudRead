@@ -18,6 +18,7 @@ public class XML_JSONService {
             URL url = new URL(urlPath);                                                 // URL exception possible, handled first
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();    // IOException possible
             connection.setRequestProperty("Accept", "application/xml");
+            connection.setConnectTimeout(2000);
             int response = connection.getResponseCode();                                // IOException possible
             log.debug("downloadXML response code: " + response);
 
@@ -50,6 +51,7 @@ public class XML_JSONService {
             URL url = new URL(urlPath);                                                 // URL exception possible, handled first
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();    // IOException possible
             connection.setRequestProperty("Accept", "application/json");
+            connection.setConnectTimeout(2000);
             int response = connection.getResponseCode();                                // IOException possible
             log.debug("downloadJSON response code: " + response);
 

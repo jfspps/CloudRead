@@ -15,11 +15,6 @@
   </div>
 
   <div class="row justify-content-start">
-    <div class="col">
-      <h3>Fundamental articles</h3>
-    </div>
-  </div>
-  <div class="row justify-content-start">
     <!--/*@thymesVar id="fundamentalPieces" type="com.example.cloudread.JAXBmodel.FundamentalPieceDTOList"*/-->
     <div class="col" th:object="${fundamentalPieces}">
       <table class="table table-hover table-sm table-striped table-dark my-auto mx-0">
@@ -29,16 +24,18 @@
           <th class="px-3">Title</th>
           <th class="px-3">Keyword</th>
           <th class="px-3">No. of concepts</th>
+          <th class="px-3">Export to DOCX</th>
         </tr>
         </thead>
         <tbody>
         <!--/*@thymesVar id="fundamental" type="com.example.cloudread.JAXBmodel.FundamentalPieceDTO"*/-->
         <tr th:each="fundamental: ${fundamentalPieces.getFundamentalPiece()}">
           <th class="px-3"><a role="button" class="btn btn-sm btn-outline-info"
-                              th:href="@{/fundamentals/{ID}(ID=${fundamental.getId()})}" th:text="${fundamental.getId()}"></a></th>
+                              th:href="@{/fundamentals/{ID}/retrieve(ID=${fundamental.getId()})}" th:text="${fundamental.getId()}"></a></th>
           <td class="px-3" th:text="${fundamental.getTitle()}"></td>
           <td class="px-3" th:text="${fundamental.getKeyword()}"></td>
           <td class="px-3" th:text="${fundamental.conceptDTOList.conceptDTO.size()}"></td>
+          <td class="px-3"><a class="btn btn-small btn-outline-success" type="button" th:href="@{/fundamentals/{id}/save(id=${fundamental.getId()})}">Export</a></td>
         </tr>
         </tbody>
       </table>
@@ -46,7 +43,7 @@
     </div>
   </div>
   <hr/>
-  <a class="btn btn-outline-primary" type="button" th:href="@{/}">Return to index</a>
+  <a class="btn btn-outline-primary" type="button" th:href="@{/}">Homepage</a>
 </div>
 
 <footer th:replace="fragments/footer :: footer"></footer>

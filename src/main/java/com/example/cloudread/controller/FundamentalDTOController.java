@@ -2,11 +2,9 @@ package com.example.cloudread.controller;
 
 import com.example.cloudread.JAXBmodel.FundamentalPieceDTO;
 import com.example.cloudread.JAXBmodel.FundamentalPieceDTOList;
-import com.example.cloudread.JAXBmodel.ResearchPieceDTO;
-import com.example.cloudread.JAXBmodel.ResearchPieceDTOList;
 import com.example.cloudread.controller.api.FundamentalPieceController;
-import com.example.cloudread.controller.api.ResearchPieceController;
 import com.example.cloudread.service.api.FundamentalService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/fundamentals")
+@Slf4j
 public class FundamentalDTOController {
 
     private final FundamentalService fundamentalService;
@@ -66,8 +65,30 @@ public class FundamentalDTOController {
         return "fundamental/fundamentalList";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/retrieve")
     public String getFundamentalPiece(@PathVariable("id") String ID, Model model){
+        FundamentalPieceDTO found = getFundamentalPieceDTO(ID, model);
+        if (found == null) return "index";
+
+        model.addAttribute("fundamental", found);
+        return "fundamental/fundamentalPiece";
+    }
+
+    @GetMapping("/{id}/save")
+    public String getSaveFundamentalToDOCX(@PathVariable("id") String ID, Model model){
+        FundamentalPieceDTO found = getFundamentalPieceDTO(ID, model);
+
+        // todo: run this on a separate thread
+        if (found != null){
+            // remove whitespace from the title and use it as part of the filename
+            log.info("DOCX saved: " + fundamentalService.composeFundamentalDOCX(found, found.getTitle().replaceAll("\\s+","") + "_DOCX.docx"));
+        }
+
+        model.addAttribute("fundamental", found);
+        return "fundamental/fundamentalPiece";
+    }
+
+    private FundamentalPieceDTO getFundamentalPieceDTO(String ID, Model model) {
         FundamentalPieceDTOList onFile = fundamentalService.parseFundamentalXMLFile(FundamentalPieceController.FUNDAMENTAL_XMLFILE);
 
         FundamentalPieceDTO found = onFile.getFundamentalPiece().stream()
@@ -77,10 +98,8 @@ public class FundamentalDTOController {
 
         if (found == null){
             model.addAttribute("message", "Fundamental article not on file");
-            return "index";
+            return null;
         }
-
-        model.addAttribute("fundamental", found);
-        return "fundamental/fundamentalPiece";
+        return found;
     }
 }

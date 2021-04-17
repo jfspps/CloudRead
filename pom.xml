@@ -61,6 +61,23 @@
             <version>2.5.0</version>
         </dependency>
 
+        <!-- Required for docx4j (JAXB required assumes JAXB2 above??), exclude embedded SLF4j -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j</artifactId>
+            <version>6.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!--        Webjars-->
         <dependency>
             <groupId>org.webjars</groupId>
