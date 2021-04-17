@@ -39,21 +39,21 @@ public class ResearchService {
     public static final String XMLCitationDTO = "citationDTO";
     public static final String XMLCitationRef = "reference";
 
-    private final XMLService xmlService;
+    private final XML_JSONService xmlJSONService;
 
-    public ResearchService(XMLService xmlService) {
-        this.xmlService = xmlService;
+    public ResearchService(XML_JSONService xmlJSONService) {
+        this.xmlJSONService = xmlJSONService;
     }
 
     public ResearchPieceDTOList parseResearchURL(String urlPath, String filename) {
         // save request to XML first then parse XML
-        if (xmlService.downloadXML(urlPath, filename)) {
-            return parseResearchXML(filename);
+        if (xmlJSONService.downloadXML(urlPath, filename)) {
+            return parseResearchXMLFile(filename);
         }
         return null;
     }
 
-    public ResearchPieceDTOList parseResearchXML(String filename) {
+    public ResearchPieceDTOList parseResearchXMLFile(String filename) {
 
         ResearchPieceDTOList researchPieceDTOList = new ResearchPieceDTOList();
         ResearchPieceDTO researchPieceDTO = null;

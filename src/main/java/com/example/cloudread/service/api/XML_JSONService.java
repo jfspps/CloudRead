@@ -11,7 +11,7 @@ import java.net.URL;
 
 @Service
 @Slf4j
-public class XMLService {
+public class XML_JSONService {
 
     public boolean downloadXML(String urlPath, String filename) {
         try {
@@ -76,4 +76,7 @@ public class XMLService {
 
         return false;
     }
+
+
+
 }

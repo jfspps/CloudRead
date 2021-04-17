@@ -21,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 public class FundamentalService {
 
-    private final XMLService xmlService;
+    private final XML_JSONService xmlJSONService;
 
     public static final String XMLFundamentalPiece = "fundamentalPiece";
     public static final String XML_ID = "id";
@@ -36,13 +36,13 @@ public class FundamentalService {
     public static final String XMLConceptDesc = "description";
     public static final String XMLConceptPriority = "priority";
 
-    public FundamentalService(XMLService xmlService) {
-        this.xmlService = xmlService;
+    public FundamentalService(XML_JSONService xmlJSONService) {
+        this.xmlJSONService = xmlJSONService;
     }
 
     public FundamentalPieceDTOList parseFundamentalURL(String urlPath, String filename) {
         // save request to XML first then parse XML
-        if (xmlService.downloadXML(urlPath, filename)) {
+        if (xmlJSONService.downloadXML(urlPath, filename)) {
             return parseFundamentalXMLFile(filename);
         }
         return null;
