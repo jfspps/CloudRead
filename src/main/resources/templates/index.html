@@ -10,8 +10,10 @@
     <div class="row justify-content-start">
         <div class="col">
             <h1>CloudRead</h1>
+            <p>All database queries are saved to file for future use and can be retrieved if the database is offline.</p>
         </div>
     </div>
+    <br>
 
     <div class="row justify-content-start">
         <div class="col">
@@ -20,12 +22,12 @@
     </div>
     <div class="row justify-content-start">
         <div class="col-6">
-            <a class="btn btn-outline-primary" type="button" th:href="@{/fundamentals/file}">List fundamentals on file</a>
-            <small class="form-text text-light">Select this option if the database is currently offline</small>
+            <a class="btn btn-outline-primary" type="button" th:href="@{/fundamentals/DB}">Fundamental article(s) on database</a>
+            <small class="form-text text-light">Retrieve a list of fundamental pieces from the database and save to file</small>
         </div>
         <div class="col-6">
-            <a class="btn btn-outline-primary" type="button" th:href="@{/fundamentals/DB}">Retrieve fundamentals</a>
-            <small class="form-text text-light">Retrieve a list of fundamental pieces from the database and save to file</small>
+            <a class="btn btn-outline-primary" type="button" th:href="@{/fundamentals/file}">List fundamentals on file</a>
+            <small class="form-text text-light">Retrieve the last fundamental article query from saved file</small>
         </div>
     </div>
     <hr />
@@ -37,12 +39,12 @@
     </div>
     <div class="row justify-content-start">
         <div class="col-6">
-            <a class="btn btn-outline-secondary" type="button" th:href="@{/research/file}">List research articles on file</a>
-            <small class="form-text text-light">Select this option if the database is currently offline</small>
+            <a class="btn btn-outline-secondary" type="button" th:href="@{/research/DB}">Research article(s) on database</a>
+            <small class="form-text text-light">Retrieve a list of research pieces from the database and save to file</small>
         </div>
         <div class="col-6">
-            <a class="btn btn-outline-secondary" type="button" th:href="@{/research/DB}">Retrieve research articles</a>
-            <small class="form-text text-light">Retrieve a list of research pieces from the database and save to file</small>
+            <a class="btn btn-outline-secondary" type="button" th:href="@{/research/file}">List research articles on file</a>
+            <small class="form-text text-light">Retrieve the last research article query from saved file</small>
         </div>
     </div>
     <br>
