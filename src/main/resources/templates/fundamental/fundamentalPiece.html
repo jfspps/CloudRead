@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: baseHead(~{::title})">
+  <title>Fundamental article</title>
+</head>
+<body>
+
+<!--/*@thymesVar id="fundamental" type="com.example.cloudread.JAXBmodel.FundamentalPieceDTO"*/-->
+<div class="container" th:object="${fundamental}">
+
+    <div class="row justify-content-start">
+      <div class="col">
+        <h1 th:if="${!fundamental.getTitle().isBlank()}" th:text="${fundamental.getTitle}"></h1>
+        <h1 th:unless="${!fundamental.getTitle().isBlank()}" th:text="${'(No title on file)'}"></h1>
+      </div>
+      <br>
+    </div>
+
+    <div class="row justify-content-start">
+      <div class="col-2">
+        <label><b>Title:</b> </label>
+      </div>
+      <div class="col-10">
+        <textarea type="text" class="form-control bg-light rounded" th:field="*{title}" readonly></textarea>
+      </div>
+    </div>
+    <div class="row justify-content-start">
+      <div class="col-2">
+        <label><b>Keyword:</b> </label>
+      </div>
+      <div class="col-10">
+        <textarea type="text" class="form-control bg-light rounded" th:field="*{keyword}" readonly></textarea>
+      </div>
+    </div>
+    <div class="row justify-content-start">
+      <div class="col-2">
+        <label><b>Prerequisites:</b> </label>
+      </div>
+      <div class="col-10">
+        <textarea class="form-control bg-light rounded" rows="1" th:field="*{prerequisites}" readonly></textarea>
+      </div>
+    </div>
+    <div class="row justify-content-start">
+      <div class="col-2">
+        <label><b>Summary</b> </label>
+      </div>
+      <div class="col-10">
+        <textarea class="form-control bg-light rounded" rows="2" th:field="*{summary}" readonly></textarea>
+      </div>
+    </div>
+  <hr/>
+
+  <div>
+    <div class="row justify-content-start">
+      <div class="col">
+        <h3>Concepts (purpose and description)</h3>
+      </div>
+    </div>
+
+    <br>
+    <span th:if="${fundamental.getConceptDTOList().getConceptDTO().isEmpty()}">
+            <div class="row justify-content-start">
+                <div class="col">
+                    <p>No concept notes on file</p>
+                </div>
+            </div>
+        </span>
+
+    <span th:unless="${fundamental.getConceptDTOList().getConceptDTO().isEmpty()}">
+
+                <!--/*@thymesVar id="concept" type="com.example.cloudread.JAXBmodel.ConceptDTO"*/-->
+                <div class="row justify-content-start" th:each="concept: ${fundamental.getConceptDTOList().getConceptDTO()}">
+                    <div class="col col-sm-3 col-md-2 col-lg-1">
+                        <label th:text="${'Priority: ' + concept.getId()}">Priority</label>
+                    </div>
+                    <div class="col col-sm-8 col-md-9 col-lg-10">
+                        <textarea class="form-control bg-light rounded" name="purpose" rows="1"
+                                  th:text="${concept.getPurpose()}" placeholder="Concept purpose" readonly></textarea>
+                        <textarea class="form-control bg-light rounded" name="description" rows="3"
+                                  th:text="${concept.getDescription()}" placeholder="Concept description" readonly></textarea>
+                    </div>
+                </div>
+        </span>
+  </div>
+  <hr/>
+  <a class="btn btn-outline-primary" type="button" th:href="@{/}">Return to index</a>
+</div>
+<br>
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
