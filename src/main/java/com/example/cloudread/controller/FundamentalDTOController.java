@@ -117,11 +117,9 @@ public class FundamentalDTOController {
     private FundamentalPieceDTO getFundamentalPieceDTO(String ID) {
         FundamentalPieceDTOList onFile = fundamentalService.parseFundamentalXMLFile(FundamentalPieceController.FUNDAMENTAL_XMLFILE);
 
-        FundamentalPieceDTO found = onFile.getFundamentalPiece().stream()
+        return onFile.getFundamentalPiece().stream()
                 .filter(fundamentalPieceDTO -> fundamentalPieceDTO.getId().equals(Long.valueOf(ID)))
                 .findFirst()
                 .orElse(null);
-
-        return found;
     }
 }
