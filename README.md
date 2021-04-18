@@ -6,4 +6,6 @@ CloudRead can retrieve saved queries by ID for the user to view without re-query
 
 ## Docker file
 
-A docker image can be built by following the instructions provided [here](./docker/README.md) using the [Dockerfile](./docker/Dockerfile) provided.
+A docker image can be built by following the instructions provided [here](./docker/README.md) using the [Dockerfile](./docker/Dockerfile) provided. 
+
+A Docker image of CloudRead can be pulled from the project's [Docker Hub](https://hub.docker.com/r/jfspps/cloud-read-docker).
