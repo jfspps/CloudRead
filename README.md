@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/jfspps/CloudRead.svg?style=svg)](https://circleci.com/gh/jfspps/CloudRead)
+
+
 # CloudRead
 
 CloudRead is a REST client for the article authoring tool, [CloudWrite](https://github.com/jfspps/CloudWrite). It provides read-only, frontend access to the CloudWrite database, and primarily saves REST queries to an XML file. Saving to JSON is also provided though all subsequent Java object instantiation is based on the XML file.
