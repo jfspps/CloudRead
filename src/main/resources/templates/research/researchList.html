@@ -39,6 +39,7 @@
                     <th class="px-3">Title</th>
                     <th class="px-3">Keyword</th>
                     <th class="px-3">No. of key results</th>
+                    <th class="px-3">Export to DOCX</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,7 @@
                     <td class="px-3" th:text="${research.getTitle()}"></td>
                     <td class="px-3" th:text="${research.getKeyword()}"></td>
                     <td class="px-3" th:text="${research.getKeyResultDTOList().getKeyResultDTO().size()}"></td>
+                    <td class="px-3"><a class="btn btn-small btn-outline-success" type="button" th:href="@{/research/{id}/save(id=${research.getId()})}">Export</a></td>
                 </tr>
                 </tbody>
             </table>

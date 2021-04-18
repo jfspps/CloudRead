@@ -9,7 +9,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 public class WebClientConfig implements WebMvcConfigurer {
     public static final String BASE_URL = "http://localhost:5000/api";
 
-    public static final String DOCX_directory = "./src/main/resources/DOCX/";
+    public static final String DOCX_directory = "./DOCX/";
 
     // required for AWS or other systems that require explicit template resolvers
     @Bean

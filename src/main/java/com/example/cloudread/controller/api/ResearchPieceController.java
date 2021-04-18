@@ -20,8 +20,8 @@ public class ResearchPieceController {
     // see CloudWrite for routing
     public static final String CloudWriteResearchPath = WebClientConfig.BASE_URL + "/research/";
 
-    public static final String RESEARCH_XMLFILE = "./src/main/resources/xmlFeeds/research.xml";
-    public static final String RESEARCH_JSONFILE = "./src/main/resources/xmlFeeds/research.json";
+    public static final String RESEARCH_XMLFILE = "./xmlFeeds/research.xml";
+    public static final String RESEARCH_JSONFILE = "./xmlFeeds/research.json";
 
     public ResearchPieceController(XML_JSONService xmlJSONService, ResearchService researchService) {
         this.xmlJSONService = xmlJSONService;

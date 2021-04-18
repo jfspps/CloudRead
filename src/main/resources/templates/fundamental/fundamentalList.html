@@ -40,6 +40,7 @@
           <th class="px-3">Title</th>
           <th class="px-3">Keyword</th>
           <th class="px-3">No. of concepts</th>
+          <th class="px-3">Export to DOCX</th>
         </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@
           <td class="px-3" th:text="${fundamental.getTitle()}"></td>
           <td class="px-3" th:text="${fundamental.getKeyword()}"></td>
           <td class="px-3" th:text="${fundamental.conceptDTOList.conceptDTO.size()}"></td>
+          <td class="px-3"><a class="btn btn-small btn-outline-success" type="button" th:href="@{/fundamentals/{id}/save(id=${fundamental.getId()})}">Export</a></td>
         </tr>
         </tbody>
       </table>

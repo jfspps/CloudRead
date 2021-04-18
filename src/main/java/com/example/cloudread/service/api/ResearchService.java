@@ -18,6 +18,8 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 @Slf4j
@@ -260,6 +262,7 @@ public class ResearchService {
         WordprocessingMLPackage wordPackage = null;
 
         try {
+            Files.createDirectories(Paths.get(WebClientConfig.DOCX_directory));
             wordPackage = WordprocessingMLPackage.createPackage();
             MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
             mainDocumentPart.addStyledParagraphOfText("Title", researchPieceDTO.getTitle());
@@ -294,6 +297,8 @@ public class ResearchService {
             log.debug("Error building wordPackage: " + invalidFormatException.getMessage());
         } catch (Docx4JException e) {
             log.debug("Error saving DOCX: " + e.getMessage());
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
 
         if (wordPackage != null){

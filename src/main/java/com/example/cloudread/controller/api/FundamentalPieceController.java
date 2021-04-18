@@ -19,8 +19,8 @@ public class FundamentalPieceController {
     // see CloudWrite for routing
     public static final String CloudWriteFundamentalsPath = WebClientConfig.BASE_URL + "/fundamentals/";
 
-    public static final String FUNDAMENTAL_XMLFILE = "./src/main/resources/xmlFeeds/fundamental.xml";
-    public static final String FUNDAMENTAL_JSONFILE = "./src/main/resources/xmlFeeds/fundamental.json";
+    public static final String FUNDAMENTAL_XMLFILE = "./xmlFeeds/fundamental.xml";
+    public static final String FUNDAMENTAL_JSONFILE = "./xmlFeeds/fundamental.json";
 
     public FundamentalPieceController(XML_JSONService xmlJSONService, FundamentalService fundamentalService) {
         this.xmlJSONService = xmlJSONService;
