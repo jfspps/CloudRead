@@ -185,7 +185,7 @@ public class FundamentalService {
             // assume that ordering of concepts was handled by CloudWrite
             mainDocumentPart.addStyledParagraphOfText("Heading2", "Concepts");
             for (ConceptDTO conceptDTO : fundamentalPieceDTO.getConceptDTOList().getConceptDTO()) {
-                mainDocumentPart.addStyledParagraphOfText("Heading6", conceptDTO.getPurpose());
+                mainDocumentPart.addStyledParagraphOfText("Heading5", conceptDTO.getPurpose());
                 mainDocumentPart.addParagraphOfText(conceptDTO.getDescription());
             }
 
