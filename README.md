@@ -12,3 +12,7 @@ CloudRead can retrieve [saved queries](./xmlFeeds) by ID for the user to view wi
 (Docker images are currently under development)
 
 Download copies of the JAR directories and subdirectories present for both [CloudRead](https://github.com/jfspps/CloudRead/tree/main/JAR) and [CloudWrite](https://github.com/jfspps/CloudWrite/tree/main/JAR). Run both JARs in separate terminals as outlined in their respective READMEs. Then access localhost port 5000 for CloudWrite or localhost port 8080 for CloudRead.
+
+## XML schema to Java classes
+
+As will become apparent on inspection, CloudRead uses the same XML schema [XSD](https://github.com/jfspps/CloudRead/tree/main/src/main/resources/xsd) as CloudWrite and generates DTO classes during packaging. To extend CloudRead, one is advised to first build the project so that the IDE can recognise the generated classes (typically located in /target) before continuing.
