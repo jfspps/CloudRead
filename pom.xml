@@ -48,6 +48,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--For custom application.properties-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
         <!-- Spring WebClient for http requests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
