@@ -11,7 +11,11 @@ CloudRead can retrieve [saved queries](./xmlFeeds) by ID for the user to view wi
 
 Download copies of the JAR directories and subdirectories present for both [CloudRead](https://github.com/jfspps/CloudRead/tree/main/JAR) and [CloudWrite](https://github.com/jfspps/CloudWrite/tree/main/JAR). Run both JARs in separate terminals as outlined in their respective READMEs. Then access localhost port 5000 for CloudWrite or localhost port 8080 for CloudRead.
 
-To build a CloudRead Docker image, follow the guidelines [here](https://github.com/jfspps/CloudRead/tree/main/docker/README.md). This also contains instructions about running both CloudWrite (to build a CloudWrite image, go [here](https://github.com/jfspps/CloudWrite/tree/main/docker/README.md)) and CloudRead containers in their own subnet with Docker Compose.
+## Docker image
+
+The Docker Hub image is [here](https://hub.docker.com/repository/docker/jfspps/cloud-read-docker).
+
+To build a CloudRead Docker image, follow the guidelines [here](https://github.com/jfspps/CloudRead/tree/main/docker/README.md). This also contains instructions about running both CloudWrite (to build a CloudWrite image, go [here](https://github.com/jfspps/CloudWrite/tree/main/docker/README.md) and CloudRead containers in their own subnet with Docker Compose.
 
 ## XML schema to Java classes
 
