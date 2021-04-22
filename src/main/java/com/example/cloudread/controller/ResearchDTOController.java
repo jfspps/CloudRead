@@ -1,10 +1,10 @@
 package com.example.cloudread.controller;
 
-import com.example.cloudread.JAXBmodel.FundamentalPieceDTO;
 import com.example.cloudread.JAXBmodel.ResearchPieceDTO;
 import com.example.cloudread.JAXBmodel.ResearchPieceDTOList;
 import com.example.cloudread.controller.api.ResearchPieceController;
 import com.example.cloudread.exceptions.NotFoundException;
+import com.example.cloudread.restapi.RESTAPIConfig;
 import com.example.cloudread.service.api.ResearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -28,8 +28,12 @@ public class ResearchDTOController {
 
     private final ResearchService researchService;
 
-    public ResearchDTOController(ResearchService researchService) {
+    // see CloudWrite for routing
+    private final String CloudWriteResearchPath;
+
+    public ResearchDTOController(ResearchService researchService, RESTAPIConfig restapiConfig) {
         this.researchService = researchService;
+        CloudWriteResearchPath = restapiConfig.getUrl() + restapiConfig.getResearch_path();
     }
 
     @GetMapping("/file")
@@ -42,7 +46,7 @@ public class ResearchDTOController {
     @GetMapping("/DB")
     public String getResearchFromDB(Model model){
         ResearchPieceDTOList onDB = researchService.parseResearchURL(
-                ResearchPieceController.CloudWriteResearchPath,  ResearchPieceController.RESEARCH_XMLFILE);
+                CloudWriteResearchPath,  ResearchPieceController.RESEARCH_XMLFILE);
 
         if (onDB == null){
             model.addAttribute("message", "Database offline");
@@ -58,9 +62,9 @@ public class ResearchDTOController {
         String searchPath;
 
         if (keyWord.isBlank()){
-            searchPath = ResearchPieceController.CloudWriteResearchPath;
+            searchPath = CloudWriteResearchPath;
         } else
-            searchPath = ResearchPieceController.CloudWriteResearchPath + keyWord + "/search";
+            searchPath = CloudWriteResearchPath + keyWord + "/search";
 
         ResearchPieceDTOList onDB = researchService.parseResearchURL(
                 searchPath, ResearchPieceController.RESEARCH_XMLFILE);

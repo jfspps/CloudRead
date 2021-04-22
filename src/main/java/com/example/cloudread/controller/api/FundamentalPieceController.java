@@ -1,9 +1,11 @@
 package com.example.cloudread.controller.api;
 
 import com.example.cloudread.config.WebClientConfig;
+import com.example.cloudread.restapi.RESTAPIConfig;
 import com.example.cloudread.service.api.FundamentalService;
 import com.example.cloudread.service.api.XML_JSONService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,14 +19,15 @@ public class FundamentalPieceController {
     private final FundamentalService fundamentalService;
 
     // see CloudWrite for routing
-    public static final String CloudWriteFundamentalsPath = WebClientConfig.BASE_URL + "/fundamentals/";
+    private final String CloudWriteFundamentalsPath;
 
     public static final String FUNDAMENTAL_XMLFILE = "./xmlFeeds/fundamental.xml";
     public static final String FUNDAMENTAL_JSONFILE = "./xmlFeeds/fundamental.json";
 
-    public FundamentalPieceController(XML_JSONService xmlJSONService, FundamentalService fundamentalService) {
+    public FundamentalPieceController(XML_JSONService xmlJSONService, FundamentalService fundamentalService, RESTAPIConfig restapiConfig) {
         this.xmlJSONService = xmlJSONService;
         this.fundamentalService = fundamentalService;
+        CloudWriteFundamentalsPath = restapiConfig.getUrl() + restapiConfig.getFundamentals_path();
     }
 
     @GetMapping(value = "listFundamentals/xml")

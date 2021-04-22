@@ -2,16 +2,14 @@ package com.example.cloudread.controller;
 
 import com.example.cloudread.JAXBmodel.FundamentalPieceDTO;
 import com.example.cloudread.JAXBmodel.FundamentalPieceDTOList;
-import com.example.cloudread.config.WebClientConfig;
 import com.example.cloudread.controller.api.FundamentalPieceController;
 import com.example.cloudread.exceptions.NotFoundException;
+import com.example.cloudread.restapi.RESTAPIConfig;
 import com.example.cloudread.service.api.FundamentalService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.NoSuchFileException;
 
 @Controller
 @RequestMapping("/fundamentals")
@@ -30,8 +26,12 @@ public class FundamentalDTOController {
 
     private final FundamentalService fundamentalService;
 
-    public FundamentalDTOController(FundamentalService fundamentalService) {
+    // see CloudWrite for routing
+    private final String CloudWriteFundamentalsPath;
+
+    public FundamentalDTOController(FundamentalService fundamentalService, RESTAPIConfig restapiConfig) {
         this.fundamentalService = fundamentalService;
+        CloudWriteFundamentalsPath = restapiConfig.getUrl() + restapiConfig.getFundamentals_path();
     }
 
     @GetMapping("/file")
@@ -44,7 +44,7 @@ public class FundamentalDTOController {
     @GetMapping("/DB")
     public String getFundamentalsFromDB(Model model){
         FundamentalPieceDTOList onDB = fundamentalService.parseFundamentalURL(
-                FundamentalPieceController.CloudWriteFundamentalsPath, FundamentalPieceController.FUNDAMENTAL_XMLFILE);
+                CloudWriteFundamentalsPath, FundamentalPieceController.FUNDAMENTAL_XMLFILE);
 
         if (onDB == null){
             model.addAttribute("message", "Database offline");
@@ -60,9 +60,9 @@ public class FundamentalDTOController {
         String searchPath;
 
         if (keyWord.isBlank()){
-            searchPath = FundamentalPieceController.CloudWriteFundamentalsPath;
+            searchPath = CloudWriteFundamentalsPath;
         } else
-            searchPath = FundamentalPieceController.CloudWriteFundamentalsPath + keyWord + "/search";
+            searchPath = CloudWriteFundamentalsPath + keyWord + "/search";
 
         FundamentalPieceDTOList onDB = fundamentalService.parseFundamentalURL(
                 searchPath, FundamentalPieceController.FUNDAMENTAL_XMLFILE);

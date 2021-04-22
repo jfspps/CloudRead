@@ -1,10 +1,11 @@
 package com.example.cloudread.controller.api;
 
 
-import com.example.cloudread.config.WebClientConfig;
+import com.example.cloudread.restapi.RESTAPIConfig;
 import com.example.cloudread.service.api.ResearchService;
 import com.example.cloudread.service.api.XML_JSONService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,14 +19,15 @@ public class ResearchPieceController {
     private final ResearchService researchService;
 
     // see CloudWrite for routing
-    public static final String CloudWriteResearchPath = WebClientConfig.BASE_URL + "/research/";
+    private final String CloudWriteResearchPath;
 
     public static final String RESEARCH_XMLFILE = "./xmlFeeds/research.xml";
     public static final String RESEARCH_JSONFILE = "./xmlFeeds/research.json";
 
-    public ResearchPieceController(XML_JSONService xmlJSONService, ResearchService researchService) {
+    public ResearchPieceController(XML_JSONService xmlJSONService, ResearchService researchService, RESTAPIConfig restapiConfig) {
         this.xmlJSONService = xmlJSONService;
         this.researchService = researchService;
+        CloudWriteResearchPath = restapiConfig.getUrl() + restapiConfig.getResearch_path();
     }
 
     @GetMapping(value = "/listResearch/xml")
