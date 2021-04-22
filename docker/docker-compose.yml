@@ -1,0 +1,38 @@
+version: '3.3'
+
+services: 
+  cloud_write:
+    image: cloud-write-docker
+      ports: 
+        - "5000:5000"   # host:container
+      restart: always
+      networks:
+        static-network:
+          ipv4_address: 172.20.128.2
+
+  cloud_read:
+    image: cloud-read-docker
+      ports:
+        - "8080:8080"
+      restart: always
+      depends_on:
+        - cloud_write   # closes cloud_read if cloud_write is not running?
+      networks:
+        - static-network
+      environment:
+        REST_CONFIG_URL: http://172.20.128.2:5000/api
+      volumes:
+        - /DOCX/
+        - /xmlFeeds/
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+        
+# you may need to prune containers and networks before composing
+
+# To determine IP addresses of all running containers, run the following from the command line:
+# for s in `docker-compose ps -q`; do echo ip of `docker inspect -f "{{.Name}}" $s` is `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $s`; done
+# https://stackoverflow.com/questions/27937185/assign-static-ip-to-docker-container
